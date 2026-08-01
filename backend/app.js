@@ -37,6 +37,13 @@ app.use(
 );
 app.use("/api/reports", require("./routes/reportRoutes"));
 
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Heart Disease Detection Backend is running 🚀",
+  });
+});
+
 app.post("/api/predict", authenticateOptional, async (req, res) => {
   try {
     // 1. Send data to FastAPI
@@ -65,9 +72,8 @@ app.post("/api/predict", authenticateOptional, async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
+
+
 app.get("/api/records", async (req, res) => {
   try {
     const data = await Prediction.find().sort({ createdAt: -1 });

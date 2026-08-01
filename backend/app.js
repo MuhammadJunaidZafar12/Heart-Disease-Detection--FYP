@@ -65,6 +65,9 @@ app.post("/api/predict", authenticateOptional, async (req, res) => {
   }
 });
 
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 app.get("/api/records", async (req, res) => {
   try {
     const data = await Prediction.find().sort({ createdAt: -1 });

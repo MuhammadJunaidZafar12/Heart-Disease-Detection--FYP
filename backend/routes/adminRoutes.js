@@ -33,7 +33,6 @@ router.get("/dashboard", verifyToken, verifyAdmin, async (req, res) => {
       recentPredictions,
     });
   } catch (err) {
-    console.error("Admin dashboard error:", err);
     res.status(500).json({ error: "Unable to load admin dashboard data" });
   }
 });
@@ -44,7 +43,6 @@ router.get("/users", verifyToken, verifyAdmin, async (req, res) => {
     const users = await User.find().select("-password").sort({ createdAt: -1 });
     res.json({ users, total: users.length });
   } catch (err) {
-    console.error("Error fetching users:", err);
     res.status(500).json({ error: "Failed to fetch users" });
   }
 });
@@ -58,7 +56,6 @@ router.get("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    console.error("Error fetching user:", err);
     res.status(500).json({ error: "Failed to fetch user" });
   }
 });
@@ -88,7 +85,6 @@ router.put("/users/:id/set-admin", verifyToken, verifyAdmin, async (req, res) =>
       user,
     });
   } catch (err) {
-    console.error("Error updating user admin status:", err);
     res.status(500).json({ error: "Failed to update user" });
   }
 });
@@ -102,7 +98,6 @@ router.delete("/users/:id", verifyToken, verifyAdmin, async (req, res) => {
     }
     res.json({ success: true, message: "User deleted" });
   } catch (err) {
-    console.error("Error deleting user:", err);
     res.status(500).json({ error: "Failed to delete user" });
   }
 });

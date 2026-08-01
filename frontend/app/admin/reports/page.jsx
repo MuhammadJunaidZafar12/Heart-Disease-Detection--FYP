@@ -30,8 +30,9 @@ export default function ReportsPage() {
 
 
   const fetchReports = async () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
     const res = await axios.get(
-      "http://localhost:5000/api/reports",
+      `${apiBaseUrl}/reports`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -50,8 +51,9 @@ export default function ReportsPage() {
   
   const generateReport =
     async () => {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       await axios.post(
-        "http://localhost:5000/api/reports/generate",
+        `${apiBaseUrl}/reports/generate`,
         null,
         {
           headers: {
@@ -103,7 +105,7 @@ export default function ReportsPage() {
                 </div>
               </div>
               <a
-                href={`http://localhost:5000${report.fileUrl}`}
+                href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}${report.fileUrl}`}
                 download={`${report.title}.pdf`}
                 className="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2.5 rounded-xl font-semibold text-sm border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition shrink-0 w-full sm:w-auto"
               >

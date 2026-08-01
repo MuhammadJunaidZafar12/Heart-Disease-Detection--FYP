@@ -20,11 +20,11 @@ export default function PredictionsChart() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("http://localhost:5000/weekly-stats");
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const res = await fetch(`${apiBaseUrl}/weekly-stats`);
         const result = await res.json();
         setData(result);
       } catch (err) {
-        console.error("Chart error:", err);
       } finally {
         setLoading(false);
       }

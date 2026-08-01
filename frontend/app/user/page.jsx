@@ -38,11 +38,11 @@ export default function UserPage() {
 
         const [predictionsRes, reportsRes] = await Promise.all([
           axios.get(
-            isAdmin ? "http://localhost:5000/predictions" : "http://localhost:5000/api/user/predictions",
+            isAdmin ? `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/predictions` : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/user/predictions`,
             { headers }
           ),
           axios.get(
-            isAdmin ? "http://localhost:5000/api/reports" : "http://localhost:5000/api/user/reports",
+            isAdmin ? `${process.env.NEXT_PUBLIC_API_URL}/reports` : `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/user/reports`,
             { headers }
           ),
         ]);
@@ -183,7 +183,7 @@ export default function UserPage() {
                         </div>
                       </div>
                       <a
-                        href={`http://localhost:5000${report.fileUrl}`}
+                        href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}${report.fileUrl}`}
                         download={`${report.title}.pdf`}
                         className="inline-flex items-center justify-center gap-2 min-h-11 px-5 py-2.5 rounded-xl border-2 border-primary text-primary hover:bg-primary/10 transition w-full sm:w-auto"
                       >

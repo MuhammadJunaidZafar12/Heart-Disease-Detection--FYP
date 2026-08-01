@@ -92,7 +92,8 @@ export default function Contact() {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/contact/submit", {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBaseUrl}/contact/submit`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

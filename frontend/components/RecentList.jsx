@@ -12,11 +12,11 @@ export default function RecentList() {
   useEffect(() => {
     const fetchRecent = async () => {
       try {
-        const res = await fetch("http://localhost:5000/recent-predictions");
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const res = await fetch(`${apiBaseUrl}/recent-predictions`);
         const data = await res.json();
         setItems(data);
       } catch (err) {
-        console.error("Error fetching recent predictions:", err);
       } finally {
         setLoading(false);
       }

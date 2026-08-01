@@ -17,10 +17,15 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect(process.env.MONGO_URI)
-.then(() => console.log("MongoDB Connected"))
-.catch(err => console.log(err));
-
+const connection = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("Failed to connect to MongoDB:", err);
+  }
+};
+connection();
 
 app.use("/api/auth", authRoutes);
 app.use("/api/predictions", predictionRoutes);
@@ -32,9 +37,9 @@ app.use(
 );
 app.use("/api/reports", require("./routes/reportRoutes"));
 
-app.post("/predict", authenticateOptional, async (req, res) => {
+app.post("/api/predict", authenticateOptional, async (req, res) => {
   try {
-    // 🔸 1. Send data to FastAPI
+    // 1. Send data to FastAPI
     const response = await axios.post(
       "http://127.0.0.1:8000/predict",
       req.body
@@ -42,7 +47,7 @@ app.post("/predict", authenticateOptional, async (req, res) => {
 
     const result = response.data;
 
-    // 🔸 2. Save BOTH input + output in MongoDB
+    // 2. Save BOTH input + output in MongoDB
     await Prediction.create({
       ...req.body,                       // user input
       user: req.user?._id,
@@ -52,8 +57,6 @@ app.post("/predict", authenticateOptional, async (req, res) => {
       confidence: result.confidence
     });
 
-    // console.log("Data received from FastAPI:", ...req.body);
-    console.log("Prediction saved to DB:", result);
     // 🔸 3. Return response to frontend
     res.json(result);
 
@@ -62,7 +65,7 @@ app.post("/predict", authenticateOptional, async (req, res) => {
   }
 });
 
-app.get("/records", async (req, res) => {
+app.get("/api/records", async (req, res) => {
   try {
     const data = await Prediction.find().sort({ createdAt: -1 });
     res.json(data);
@@ -92,7 +95,7 @@ app.get("/api/user/reports", verifyToken, async (req, res) => {
 });
 
 
-app.get("/stats",verifyToken,  async (req, res) => {
+app.get("/api/stats",verifyToken,  async (req, res) => {
   try {
     const now = new Date();
 
@@ -168,16 +171,10 @@ app.get("/stats",verifyToken,  async (req, res) => {
       createdAt: { $gte: lastMonthStart, $lte: lastMonthEnd },
       prediction: 1
     });
-    console.log("Current Month Total:", currentMonthTotal);
-    console.log("Current Month Correct:", currentMonthCorrect);
-    console.log("Last Month Total:", lastMonthTotal);
-    console.log("Last Month Correct:", lastMonthCorrect);
     const lastAccuracy =
       lastMonthTotal > 0
         ? (lastMonthCorrect / lastMonthTotal) * 100
         : 0;
-    console.log("Current Accuracy:", currentAccuracy.toFixed(2) + "%");
-    console.log("Last Accuracy:", lastAccuracy.toFixed(2) + "%");
     const accuracyChange =
       lastAccuracy > 0
         ? ((currentAccuracy - lastAccuracy) / lastAccuracy) * 100
@@ -223,7 +220,7 @@ app.get("/stats",verifyToken,  async (req, res) => {
   }
 });
 
-app.get("/weekly-stats", async (req, res) => {
+app.get("/api/weekly-stats", async (req, res) => {
   try {
     const today = new Date();
 
@@ -281,7 +278,7 @@ app.get("/weekly-stats", async (req, res) => {
   }
 });
 
-app.get("/recent-predictions", async (req, res) => {
+app.get("/api/recent-predictions", async (req, res) => {
   try {
     const recent = await Prediction.find()
       .sort({ createdAt: -1 }) // latest first
@@ -311,7 +308,7 @@ app.get("/recent-predictions", async (req, res) => {
   }
 });
 
-app.get("/predictions", async (req, res) => {
+app.get("/api/predictions", async (req, res) => {
   try {
     //fetch all predictions but exclude sensitive info
     const predictions = await Prediction.find().select("-__v");

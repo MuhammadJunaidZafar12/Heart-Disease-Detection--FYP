@@ -79,17 +79,16 @@ const Prediction = () => {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const res = await fetch("http://localhost:5000/predict", {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiBaseUrl}/predict`, {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
       });
 
       const data = await res.json();
-      console.log("API Response:", data);
       setResult(data);
     } catch (error) {
-      console.error(error);
       setResult({ error: "Something went wrong" });
     } finally {
       setLoading(false);

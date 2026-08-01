@@ -25,14 +25,16 @@ export default function AnalysisCharts() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/records")
+    console.log("Fetching data for analysis charts...");
+    console.log("API Base URL:", process.env.NEXT_PUBLIC_API_URL);
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
+    fetch(`${apiBaseUrl}/records`)
       .then((res) => res.json())
       .then((data) => {
         processData(data);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         setLoading(false);
       });
   }, []);

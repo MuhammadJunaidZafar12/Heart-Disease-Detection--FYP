@@ -43,12 +43,10 @@ router.get("/bar-stats", async (req, res) => {
       const risk =
         item._id.risk.charAt(0).toUpperCase() +
         item._id.risk.slice(1);
-      console.log("Processing item:", item, "Mapped risk:", risk);
       if (data[risk]) {
         data[risk][dayIndex] = item.count;
       }
     });
-    console.log("Final Bar Stats Data:", data);
     res.json(data);
 
   } catch (err) {

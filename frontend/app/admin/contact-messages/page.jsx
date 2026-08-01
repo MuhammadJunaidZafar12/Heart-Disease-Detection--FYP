@@ -30,7 +30,8 @@ export default function ContactMessages() {
   const fetchContacts = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/api/contact/all", {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBaseUrl}/contact/all`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -40,7 +41,6 @@ export default function ContactMessages() {
       setError("");
     } catch (err) {
       setError("Failed to fetch contacts");
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -48,8 +48,9 @@ export default function ContactMessages() {
 
   const handleSelectContact = async (contactId) => {
     try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const response = await fetch(
-        `http://localhost:5000/api/contact/${contactId}`,
+        `${apiBaseUrl}/contact/${contactId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,8 +75,9 @@ export default function ContactMessages() {
     setError("");
 
     try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const response = await fetch(
-        `http://localhost:5000/api/contact/${selectedContact._id}/reply`,
+        `${apiBaseUrl}/contact/${selectedContact._id}/reply`,
         {
           method: "POST",
           headers: {
@@ -112,8 +114,9 @@ export default function ContactMessages() {
     }
 
     try {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
       const response = await fetch(
-        `http://localhost:5000/api/contact/${contactId}`,
+        `${apiBaseUrl}/contact/${contactId}`,
         {
           method: "DELETE",
         },

@@ -15,14 +15,14 @@ export default function PatientsPage() {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      const res = await fetch("http://localhost:5000/predictions");
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await fetch(`${apiBaseUrl}/predictions`);
       
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
       
       const data = await res.json();
-      console.log("Fetched patients:", data);
       
       let patientsArray = data;
       if (data && !Array.isArray(data) && data.users) {
@@ -34,7 +34,6 @@ export default function PatientsPage() {
       setPatients(Array.isArray(patientsArray) ? patientsArray : []);
       setError(null);
     } catch (err) {
-      console.error("Error fetching patients:", err);
       setError(err.message);
       setPatients([]);
     } finally {

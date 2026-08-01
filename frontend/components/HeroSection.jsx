@@ -26,13 +26,13 @@ const HeroSection = () => {
 
   const fetchStats = async () => {
     try {
-      const response = await fetch("http://localhost:5000/stats", {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBaseUrl}/stats`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const data = await response.json();
-      console.log("Fetched stats:", data);
       setStats({
         accuracy: data.accuracyRate || 0,
         predictions: data.totalPatients || 0,
@@ -40,7 +40,6 @@ const HeroSection = () => {
       });
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching stats:", error);
       setStats({
         accuracy: 96.3,
         predictions: 2400,

@@ -28,7 +28,8 @@ export default function Dashboard() {
 
     const fetchStats = async () => {
       try {
-        const response = await fetch("http://localhost:5000/stats", {
+        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const response = await fetch(`${apiBaseUrl}/stats`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -36,7 +37,7 @@ export default function Dashboard() {
         const data = await response.json();
         setStates({ ...defaultStats, ...data });
       } catch (error) {
-        console.error("Error fetching stats:", error);
+        // Ignore stats fetch errors.
       }
     };
 

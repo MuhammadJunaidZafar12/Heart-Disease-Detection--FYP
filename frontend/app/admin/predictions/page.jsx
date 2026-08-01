@@ -37,20 +37,21 @@ export default function PredictionsPage() {
 
   const fetchPredictions = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/predictions");
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const res = await axios.get(`${apiBaseUrl}/predictions`);
       setData(res.data);
     } catch (err) {
-      console.log(err);
+      // Ignore request errors.
     }
   };
 
   const fetchBarStats = async () => {
   try {
-    const res = await axios.get("http://localhost:5000/api/predictions/bar-stats");
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+    const res = await axios.get(`${apiBaseUrl}/predictions/bar-stats`);
     setBarStats(res.data);
-    console.log("Bar Stats:", res.data);
   } catch (err) {
-    console.log(err);
+    // Ignore request errors.
   }
 };
 

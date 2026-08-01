@@ -41,7 +41,6 @@ router.post("/submit", async (req, res) => {
       contactId: contact._id,
     });
   } catch (error) {
-    console.error("Error submitting contact form:", error);
     res.status(500).json({ error: "Failed to submit contact form" });
   }
 });
@@ -54,7 +53,6 @@ router.get("/all", verifyToken, verifyAdmin, async (req, res) => {
     const contacts = await Contact.find().sort({ createdAt: -1 });
     res.status(200).json({ contacts, total: contacts.length });
   } catch (error) {
-    console.error("Error fetching contacts:", error);
     res.status(500).json({ error: "Failed to fetch contacts" });
   }
 });
@@ -76,7 +74,6 @@ router.get("/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     res.status(200).json(contact);
   } catch (error) {
-    console.error("Error fetching contact:", error);
     res.status(500).json({ error: "Failed to fetch contact" });
   }
 });
@@ -138,9 +135,8 @@ router.post("/:id/reply", verifyToken, verifyAdmin, async (req, res) => {
           </div>
         `,
       });
-      console.log("Email sent to", contact.email);
     } catch (emailError) {
-      console.warn("Email sending failed (proceeding without email):", emailError.message);
+      // Email delivery failed; the reply still remains stored.
     }
 
     res.status(200).json({
@@ -149,7 +145,6 @@ router.post("/:id/reply", verifyToken, verifyAdmin, async (req, res) => {
       contact,
     });
   } catch (error) {
-    console.error("Error sending reply:", error);
     res.status(500).json({ error: "Failed to send reply" });
   }
 });
@@ -175,7 +170,6 @@ router.put("/:id/status", verifyToken, verifyAdmin, async (req, res) => {
 
     res.status(200).json({ success: true, contact });
   } catch (error) {
-    console.error("Error updating contact:", error);
     res.status(500).json({ error: "Failed to update contact" });
   }
 });
@@ -191,7 +185,6 @@ router.delete("/:id", verifyToken, verifyAdmin, async (req, res) => {
 
     res.status(200).json({ success: true, message: "Contact deleted" });
   } catch (error) {
-    console.error("Error deleting contact:", error);
     res.status(500).json({ error: "Failed to delete contact" });
   }
 });

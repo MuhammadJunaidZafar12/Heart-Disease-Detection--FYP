@@ -128,7 +128,6 @@ router.post("/generate", verifyToken, verifyAdmin, async (req, res) => {
       reports,
     });
   } catch (error) {
-    console.log(error);
     res.status(500).json({
       message: error.message,
     });

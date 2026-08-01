@@ -18,7 +18,8 @@ export default function UsersManagement() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/api/admin/users", {
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const response = await fetch(`${apiBaseUrl}/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -26,7 +27,7 @@ export default function UsersManagement() {
       const data = await response.json();
       setUsers(data.users || []);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      // Ignore user fetch errors.
     } finally {
       setLoading(false);
     }
@@ -36,7 +37,7 @@ export default function UsersManagement() {
     setUpdating((prev) => ({ ...prev, [userId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${userId}/set-admin`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/admin/users/${userId}/set-admin`,
         {
           method: "PUT",
           headers: {
@@ -59,7 +60,6 @@ export default function UsersManagement() {
         alert(data.error || "Failed to update user");
       }
     } catch (error) {
-      console.error("Error updating user:", error);
       alert("Error updating user");
     } finally {
       setUpdating((prev) => ({ ...prev, [userId]: false }));
@@ -72,7 +72,7 @@ export default function UsersManagement() {
     setDeleting((prev) => ({ ...prev, [userId]: true }));
     try {
       const response = await fetch(
-        `http://localhost:5000/api/admin/users/${userId}`,
+        `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}/admin/users/${userId}`,
         {
           method: "DELETE",
           headers: {
@@ -89,7 +89,6 @@ export default function UsersManagement() {
         alert(data.error || "Failed to delete user");
       }
     } catch (error) {
-      console.error("Error deleting user:", error);
       alert("Error deleting user");
     } finally {
       setDeleting((prev) => ({ ...prev, [userId]: false }));

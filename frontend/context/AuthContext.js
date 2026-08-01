@@ -18,7 +18,6 @@ export const AuthProvider = ({ children }) => {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        console.error("Failed to parse user data:", error);
         localStorage.removeItem("token");
         localStorage.removeItem("user");
       }

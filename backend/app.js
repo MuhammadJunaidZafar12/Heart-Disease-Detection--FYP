@@ -8,7 +8,7 @@ const path = require("path");
 const { verifyToken, verifyAdmin, authenticateOptional } = require("./middleware/authMiddleware");
 require("dotenv").config();
 
-const authRoutes = require("./routes/authroutes"); 
+const authRoutes = require("./routes/authRoutes"); 
 const predictionRoutes = require("./routes/predictions");
 const contactRoutes = require("./routes/contactRoutes");
 const adminRoutes = require("./routes/adminRoutes");

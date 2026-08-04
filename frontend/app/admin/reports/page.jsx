@@ -17,6 +17,11 @@ export default function ReportsPage() {
   const [reports, setReports] =
     useState([]);
 
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+  const serverBaseUrl = apiBaseUrl.endsWith("/api")
+    ? apiBaseUrl.slice(0, -4)
+    : apiBaseUrl;
+
   useEffect(() => {
     if (!token) return;
     fetchReports();
@@ -30,7 +35,6 @@ export default function ReportsPage() {
 
 
   const fetchReports = async () => {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
     const res = await axios.get(
       `${apiBaseUrl}/reports`,
       {
@@ -51,8 +55,7 @@ export default function ReportsPage() {
   
   const generateReport =
     async () => {
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-      await axios.post(
+        await axios.post(
         `${apiBaseUrl}/reports/generate`,
         null,
         {
@@ -105,7 +108,7 @@ export default function ReportsPage() {
                 </div>
               </div>
               <a
-                href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"}${report.fileUrl}`}
+                href={`${serverBaseUrl}${report.fileUrl}`}
                 download={`${report.title}.pdf`}
                 className="inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2.5 rounded-xl font-semibold text-sm border-2 border-[var(--color-primary)] text-[var(--color-primary)] hover:bg-[var(--color-primary)]/10 transition shrink-0 w-full sm:w-auto"
               >

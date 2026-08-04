@@ -57,10 +57,16 @@ router.post("/generate", verifyToken, verifyAdmin, async (req, res) => {
             ? "Moderate"
             : "Low";
       const predictionResult =
-        item.result ||
+        item.result ??
           (item.prediction === 1 || item.prediction === true)
           ? "Positive"
           : "Negative";
+
+      const createdAtDate = item.createdAt ? new Date(item.createdAt) : null;
+      const createdAtText =
+        createdAtDate && !isNaN(createdAtDate.getTime())
+          ? createdAtDate.toLocaleString()
+          : "N/A";
 
       const fileName = `report-${item._id}-${Date.now()}.pdf`;
       const filePath = path.join(uploadDir, fileName);
@@ -78,7 +84,7 @@ router.post("/generate", verifyToken, verifyAdmin, async (req, res) => {
       doc.moveDown();
       doc.fontSize(16).text(`Patient Name: ${patientName}`);
       doc.text(`Age: ${item.age ?? "N/A"}`);
-      doc.text(`Created At: ${item.createdAt.toLocaleString()}`);
+      doc.text(`Created At: ${createdAtText}`);
       doc.moveDown();
 
       doc.fontSize(18).text("Prediction Summary");
@@ -118,6 +124,14 @@ router.post("/generate", verifyToken, verifyAdmin, async (req, res) => {
         fileUrl: `/uploads/${fileName}`,
         fileSize: `${fileSize} MB`,
         fileType: "PDF"
+      });
+    }
+
+    if (!createdReports.length) {
+      return res.status(200).json({
+        success: true,
+        message: "No new reports were generated.",
+        reports: [],
       });
     }
 

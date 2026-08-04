@@ -49,7 +49,7 @@ app.post("/api/predict", authenticateOptional, async (req, res) => {
   try {
     // 1. Send data to FastAPI
     const response = await axios.post(
-      "http://127.0.0.1:8000/predict",
+      `${process.env.FASTAPI}/predict`,
       req.body
     );
 

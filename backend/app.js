@@ -8,7 +8,7 @@ const path = require("path");
 const { verifyToken, verifyAdmin, authenticateOptional } = require("./middleware/authMiddleware");
 require("dotenv").config();
 
-const authRoutes = require("./routes/authRoutes"); 
+const authRoutes = require("./routes/authRoutes");
 const predictionRoutes = require("./routes/predictions");
 const contactRoutes = require("./routes/contactRoutes");
 const adminRoutes = require("./routes/adminRoutes");
@@ -17,15 +17,16 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-const connection = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to MongoDB");
-  } catch (err) {
-    console.error("Failed to connect to MongoDB:", err);
-  }
-};
-connection();
+// Force Node.js to use Google DNS (fixes SRV lookup failures with local DNS proxy)
+const dns = require("dns");
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
+
+// Connect Mongoose to MongoDB Atlas
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB Atlas successfully!"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
 
 app.use("/api/auth", authRoutes);
 app.use("/api/predictions", predictionRoutes);
@@ -58,7 +59,7 @@ app.post("/api/predict", authenticateOptional, async (req, res) => {
     await Prediction.create({
       ...req.body,                       // user input
       user: req.user?._id,
-      prediction: result.prediction, 
+      prediction: result.prediction,
       result: result.result,
       probability: result.risk_probability,
       confidence: result.confidence
@@ -104,7 +105,7 @@ app.get("/api/user/reports", verifyToken, async (req, res) => {
 });
 
 
-app.get("/api/stats",verifyToken,  async (req, res) => {
+app.get("/api/stats", verifyToken, async (req, res) => {
   try {
     const now = new Date();
 
@@ -267,7 +268,7 @@ app.get("/api/weekly-stats", async (req, res) => {
     };
 
     // Initialize all days (important for missing days)
-    const result = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(day => ({
+    const result = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(day => ({
       day,
       value: 0
     }));
@@ -293,7 +294,7 @@ app.get("/api/recent-predictions", async (req, res) => {
       .sort({ createdAt: -1 }) // latest first
       .limit(5);
 
-      
+
 
     // Format response
     const formatted = recent.map(item => {
@@ -305,8 +306,8 @@ app.get("/api/recent-predictions", async (req, res) => {
           probability >= 50
             ? "High"
             : probability >= 30
-            ? "Moderate"
-            : "Low",
+              ? "Moderate"
+              : "Low",
       };
     });
 

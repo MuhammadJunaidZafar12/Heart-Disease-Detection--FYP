@@ -5,6 +5,7 @@ const axios = require("axios");
 const Prediction = require("./models/Prediction");
 const Report = require("./models/Report");
 const path = require("path");
+const os = require("os");
 const { verifyToken, verifyAdmin, authenticateOptional } = require("./middleware/authMiddleware");
 require("dotenv").config();
 
@@ -28,13 +29,14 @@ mongoose
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
 
+const uploadDir = path.join(os.tmpdir(), "uploads");
 app.use("/api/auth", authRoutes);
 app.use("/api/predictions", predictionRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/admin", adminRoutes);
 app.use(
   "/uploads",
-  express.static(path.join(__dirname, "uploads"))
+  express.static(uploadDir)
 );
 app.use("/api/reports", require("./routes/reportRoutes"));
 

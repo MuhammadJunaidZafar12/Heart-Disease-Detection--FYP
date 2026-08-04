@@ -6,7 +6,7 @@ const router = express.Router();
 const PDFDocument = require("pdfkit");
 
 const fs = require("fs");
-
+const os = require("os");
 const path = require("path");
 
 const Prediction = require("../models/Prediction");
@@ -31,7 +31,7 @@ router.post("/generate", verifyToken, verifyAdmin, async (req, res) => {
       });
     }
 
-    const uploadDir = path.join(__dirname, "../uploads");
+    const uploadDir = path.join(os.tmpdir(), "uploads");
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

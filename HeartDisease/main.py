@@ -4,6 +4,8 @@ import pandas as pd
 import joblib
 from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
+from typing import Optional
+import logging
 
 # -------------------------------
 # Load trained artifacts (FIXED)
@@ -11,10 +13,40 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 
-model = joblib.load(BASE_DIR / "heart_model.pkl")
-columns = joblib.load(BASE_DIR / "columns.pkl")
+# Lazy-loaded artifacts
+model: Optional[object] = None
+columns: Optional[list] = None
+imputer: Optional[object] = None
 
 app = FastAPI(title="Heart Disease Prediction API")
+
+# configure logging
+logger = logging.getLogger("heart_api")
+logging.basicConfig(level=logging.INFO)
+
+
+def load_artifacts():
+    global model, columns, imputer
+    try:
+        model_path = BASE_DIR / "heart_model.pkl"
+        cols_path = BASE_DIR / "columns.pkl"
+        imputer_path = BASE_DIR / "imputer.pkl"
+
+        if not model_path.exists() or not cols_path.exists():
+            raise FileNotFoundError("Model artifacts not found in project root")
+
+        model = joblib.load(model_path)
+        columns = joblib.load(cols_path)
+
+        # imputer is optional (was present during training)
+        if imputer_path.exists():
+            imputer = joblib.load(imputer_path)
+
+        logger.info("Loaded model artifacts successfully")
+
+    except Exception as e:
+        logger.exception("Failed to load artifacts: %s", e)
+        # keep model as None so requests can return a meaningful error
 
 # -------------------------------
 # Input Schema (UNCHANGED)

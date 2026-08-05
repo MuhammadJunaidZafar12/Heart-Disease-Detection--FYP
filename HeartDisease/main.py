@@ -3,12 +3,16 @@ from pydantic import BaseModel
 import pandas as pd
 import joblib
 from fastapi.middleware.cors import CORSMiddleware
+from pathlib import Path
 
 # -------------------------------
 # Load trained artifacts (FIXED)
 # -------------------------------
-model = joblib.load("heart_model.pkl")
-columns = joblib.load("columns.pkl")
+
+BASE_DIR = Path(__file__).resolve().parent
+
+model = joblib.load(BASE_DIR / "heart_model.pkl")
+columns = joblib.load(BASE_DIR / "columns.pkl")
 
 app = FastAPI(title="Heart Disease Prediction API")
 

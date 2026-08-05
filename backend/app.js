@@ -23,12 +23,15 @@ const dns = require("dns");
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 // Connect Mongoose to MongoDB Atlas
-mongoose
+
+const MONGOCONNECTION = async ()=>{ 
+  await mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Connected to MongoDB Atlas successfully!"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
+}
 
-
+MONGOCONNECTION();
 const uploadDir = path.join(os.tmpdir(), "uploads");
 app.use("/api/auth", authRoutes);
 app.use("/api/predictions", predictionRoutes);

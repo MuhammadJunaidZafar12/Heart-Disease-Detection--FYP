@@ -79,7 +79,7 @@ const Prediction = () => {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL;
       const res = await fetch(`${apiBaseUrl}/predict`, {
         method: "POST",
         headers,
